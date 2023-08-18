@@ -25,7 +25,7 @@ En su entorno de desarrollo/local, ejecute los siguientes comandos en una termin
 ```bash
 # Clona este proyecto y accede a su dirección.
 clon de git https://github.com/redouane-dev/sync-elasticsearch-mysql.git
-
+```
 Para iniciar los servicios por separado o en un orden diferente, puede ejecutar:
 ```bash
 ventana acoplable-componer -d mysql

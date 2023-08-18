@@ -32,9 +32,6 @@ docker-compose up -d mysql
 docker-compose up -d elasticsearch kibana
 docker-compose up logstash
 ```
-Para ver los registros:
-```bash
-docker-compose logs -f --tail 111 <nombre-servicio>
-```
+
 ## Pruebas
 Consulte el siguiente artículo para realizar las pruebas en los dos posibles escenarios: [Cómo sincronizar Elasticsearch con MySQL](https://towardsdatascience.com/how-to-synchronize-elasticsearch-with-mysql-ed32fc57b339)

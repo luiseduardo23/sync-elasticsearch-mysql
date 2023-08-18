@@ -1,0 +1,52 @@
+#https://towardsdatascience.com/how-to-synchronize-elasticsearch-with-mysql-ed32fc57b339
+version: "3"
+services:
+  mysql:
+    image: mysql:8
+    container_name: sem_mysql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_DATABASE: books
+      MYSQL_USER: avid_reader
+      MYSQL_PASSWORD: i_love_books
+    volumes:
+      # Dump files for initiating tables
+      - ./data/:/docker-entrypoint-initdb.d/
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
+    container_name: sem_elasticsearch
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - ./volumes/elasticsearch:/usr/share/elasticsearch/data
+    logging:
+        driver: "json-file"
+        options:
+            max-size: "10k"
+            max-file: "10"
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.9.3
+    container_name: sem_kibana
+    environment:
+      - "ELASTICSEARCH_URL=http://elasticsearch:9200"
+      - "SERVER_NAME=127.0.0.1"
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+  logstash:
+    build:
+      context: .
+      dockerfile: Dockerfile-logstash
+    container_name: sem_logstash
+    depends_on:
+      - mysql
+      - elasticsearch
+    volumes:
+      - ./volumes/logstash/pipeline/:/usr/share/logstash/pipeline/
+      - ./volumes/logstash/config/pipelines.yml:/usr/share/logstash/config/pipelines.yml
+      - ./volumes/logstash/config/queries/:/usr/share/logstash/config/queries
